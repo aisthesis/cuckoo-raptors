@@ -14,6 +14,7 @@ codeMelon.games.AppView = Backbone.View.extend({
             'setConstants',
             'getNest',
             'getForeignEggCount',
+            'getInitialArray',
             'drawCells',
             'drawCell',
             'drawUniformCells',
@@ -45,14 +46,14 @@ codeMelon.games.AppView = Backbone.View.extend({
 
         _this.CONTEXT = _this.el.getContext('2d');
         _this.CANVAS_PADDING = 16;
-        _this.SIDE_CELLS = 4;
-        _this.SIDE_SIZE = (_this.el.width - 2 * _this.CANVAS_PADDING) / _this.SIDE_CELLS,
         _this.FOREIGN_EGG_COUNT = _this.getForeignEggCount();
         _this.NEST = _this.getNest();
+        _this.SIDE_CELLS = Math.floor(Math.sqrt(_this.NEST.length) + 0.1);
+        _this.SIDE_SIZE = (_this.el.width - 2 * _this.CANVAS_PADDING) / _this.SIDE_CELLS,
         _this.NATIVE_CELL_FILL_STYLE = '#999999';
         _this.FOREIGN_CELL_FILL_STYLE = '#FF0000';
         _this.CELL_STROKE_STYLE = '#cccccc';
-        _this.CELL_BORDER_WIDTH = 16;
+        _this.CELL_BORDER_WIDTH = 64 / _this.SIDE_CELLS;
         _this.TIME_TO_SHOW_FOREIGN = 2000;
         _this.DELAY_UNTIL_CLICK_READY = 1500;
     },
@@ -66,11 +67,7 @@ codeMelon.games.AppView = Backbone.View.extend({
      */
     getNest: function() {
         var _this = this,
-            result = [
-                -1, 0, 0, -1,
-                0, 0, 0, 0,
-                0, 0, 0, 0,
-                -1, 0, 0, -1],
+            result = _this.getInitialArray(),
             valuesToRandomize = [],
             foreignEggs,
             i;
@@ -92,6 +89,50 @@ codeMelon.games.AppView = Backbone.View.extend({
     getForeignEggCount: function() {
         // TODO link to context
         return 3;
+    },
+
+    getInitialArray: function() {
+        var result4 = [
+                -1, 0, 0, -1,
+                0, 0, 0, 0,
+                0, 0, 0, 0,
+                -1, 0, 0, -1
+            ],
+            result5 = [
+                -1, 0, 0, 0, -1,
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0,
+                -1, 0, 0, 0, -1
+            ],
+            result6 = [
+                -1, -1, 0, 0, -1, -1,
+                -1, 0, 0, 0, 0, -1,
+                0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0,
+                -1, 0, 0, 0, 0, -1,
+                -1, -1, 0, 0, -1, -1
+            ],
+            result7 = [
+                -1, -1, 0, 0, 0, -1, -1,
+                -1, 0, 0, 0, 0, 0, -1,
+                0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0,
+                -1, 0, 0, 0, 0, 0, -1,
+                -1, -1, 0, 0, 0, -1, -1
+            ],
+            result8 = [
+                -1, -1, 0, 0, 0, 0, -1, -1,
+                -1, 0, 0, 0, 0, 0, 0, -1,
+                0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0,
+                -1, 0, 0, 0, 0, 0, 0, -1,
+                -1, -1, 0, 0, 0, 0, -1, -1
+            ];
+        return result4;
     },
 
     /**
