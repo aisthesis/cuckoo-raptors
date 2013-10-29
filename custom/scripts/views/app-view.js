@@ -23,7 +23,7 @@ codeMelon.games.AppView = Backbone.View.extend({
 
         _this.setConstants(options);
         _this.readyForClick = false;
-        _this.clickCount = 0;
+        _this.clickCount = 1;
         _this.render();
     },
 
@@ -54,7 +54,7 @@ codeMelon.games.AppView = Backbone.View.extend({
         _this.CELL_STROKE_STYLE = '#cccccc';
         _this.CELL_BORDER_WIDTH = 16;
         _this.TIME_TO_SHOW_FOREIGN = 2000;
-        _this.DELAY_UNTIL_CLICK_READY = 5000;
+        _this.DELAY_UNTIL_CLICK_READY = 1500;
     },
 
     /**
@@ -155,7 +155,6 @@ codeMelon.games.AppView = Backbone.View.extend({
             console.log('out of bounds');
             return;
         }
-        _this.clickCount++;
         if (_this.clickCount > _this.FOREIGN_EGG_COUNT) {
             console.log('no more guesses allowed!');
             return;
@@ -166,9 +165,11 @@ codeMelon.games.AppView = Backbone.View.extend({
         col = Math.floor(clickX / _this.SIDE_SIZE);
         i = _this.SIDE_CELLS * row + col;
         if (_this.NEST[i] === 0) {
+            _this.clickCount++;
             alert('You destroyed a native egg!');
         }
         else if (_this.NEST[i] === 1) {
+            _this.clickCount++;
             alert('Success!');
         }
     }
