@@ -22,7 +22,10 @@ codeMelon.games.AppView = Backbone.View.extend({
             'drawUniformCells',
             'drawForeignCells',
             'handleClick',
-            'getSounds'
+            'getSounds',
+            'getInitialLevelScore',
+            'addToScores',
+            'renderScores'
         );
 
         _this.setConstants(options);
@@ -35,6 +38,7 @@ codeMelon.games.AppView = Backbone.View.extend({
 
         _this.drawUniformCells();
         _this.drawForeignCells();
+        _this.renderScores();
         setTimeout(function() {
             _this.drawUniformCells();
             setTimeout(function() {
@@ -61,6 +65,7 @@ codeMelon.games.AppView = Backbone.View.extend({
         _this.DELAY_UNTIL_CLICK_READY = 1500;
         _this.DELAY_ON_DONE = 1000;
         _this.CURRENT_SCORE_SELECTOR = '.current-score';
+        _this.LEVEL_SCORE_SELECTOR = '.level-score';
         _this.SCORE_MULTIPLE = 100;
         _this.SOUNDS = _this.getSounds(options);
     },
@@ -71,6 +76,7 @@ codeMelon.games.AppView = Backbone.View.extend({
         _this.readyForClick = false;
         _this.clickCount = 0;
         _this.currentScore = 0;
+        _this.levelScore = 0;
     },
 
     /**
@@ -242,27 +248,27 @@ codeMelon.games.AppView = Backbone.View.extend({
             _this.SOUNDS['egg_break'].stop().play();
             _this.clickCount++;
             _this.colorCell(_this.WRONG_CHOICE_FILL_STYLE, i);
-            _this.currentScore -= _this.SCORE_MULTIPLE;
-            $(_this.CURRENT_SCORE_SELECTOR).text(_this.currentScore);
+            _this.addToScores(-_this.SCORE_MULTIPLE);
+            _this.renderScores();
         }
         else if (_this.NEST[i] === 1) {
             // correct choice
             _this.SOUNDS['whoosh'].stop().play();
             _this.clickCount++;
             _this.colorCell(_this.FOREIGN_CELL_FILL_STYLE, i);
-            _this.currentScore += _this.SCORE_MULTIPLE;
-            $(_this.CURRENT_SCORE_SELECTOR).text(_this.currentScore);
+            _this.addToScores(_this.SCORE_MULTIPLE);
+            _this.renderScores();
         }
         if (_this.clickCount === _this.FOREIGN_EGG_COUNT) {
             setTimeout(function() {
                 _this.drawForeignCells();
                 if (_this.currentScore === _this.FOREIGN_EGG_COUNT * _this.SCORE_MULTIPLE) {
                     _this.SOUNDS['applause'].play();
-                    _this.currentScore *= 2;
-                    $(_this.CURRENT_SCORE_SELECTOR).text(_this.currentScore);
+                    _this.addToScores(_this.currentScore);
+                    _this.renderScores();
                 }
                 else if (_this.currentScore > 0) {
-                    _this.SOUNDS['laugh'].play();
+                    _this.SOUNDS['groan'].play();
                 }
                 else {
                     _this.SOUNDS['scream'].play();
@@ -283,8 +289,26 @@ codeMelon.games.AppView = Backbone.View.extend({
         result['applause'] = new buzz.sound(soundsPath + 'applause', params);
         result['egg_break'] = new buzz.sound(soundsPath + 'egg_break', params);
         result['scream'] = new buzz.sound(soundsPath + 'scream', params);
-        result['laugh'] = new buzz.sound(soundsPath + 'laugh', params);
+        result['groan'] = new buzz.sound(soundsPath + 'groan', params);
         result['whoosh'] = new buzz.sound(soundsPath + 'whoosh', params);
         return result;
+    },
+
+    getInitialLevelScore: function() {
+        return 0;
+    },
+
+    addToScores: function(bonus) {
+        var _this = this;
+
+        _this.currentScore += bonus;
+        _this.levelScore += bonus;
+    },
+
+    renderScores: function() {
+        var _this = this;
+
+        $(_this.CURRENT_SCORE_SELECTOR).text(_this.currentScore);
+        $(_this.LEVEL_SCORE_SELECTOR).text(_this.levelScore);
     }
 });
