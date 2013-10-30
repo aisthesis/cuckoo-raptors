@@ -21,7 +21,8 @@ codeMelon.games.AppView = Backbone.View.extend({
             'colorCell',
             'drawUniformCells',
             'drawForeignCells',
-            'handleClick'
+            'handleClick',
+            'getSounds'
         );
 
         _this.setConstants(options);
@@ -61,6 +62,7 @@ codeMelon.games.AppView = Backbone.View.extend({
         _this.DELAY_ON_DONE = 1000;
         _this.CURRENT_SCORE_SELECTOR = '.current-score';
         _this.SCORE_MULTIPLE = 100;
+        _this.SOUNDS = _this.getSounds(options);
     },
 
     initVariables: function(options) {
@@ -237,6 +239,7 @@ codeMelon.games.AppView = Backbone.View.extend({
         i = _this.SIDE_CELLS * row + col;
         if (_this.NEST[i] === 0) {
             // wrong choice
+            _this.SOUNDS['egg_break'].stop().play();
             _this.clickCount++;
             _this.colorCell(_this.WRONG_CHOICE_FILL_STYLE, i);
             _this.currentScore -= _this.SCORE_MULTIPLE;
@@ -244,6 +247,7 @@ codeMelon.games.AppView = Backbone.View.extend({
         }
         else if (_this.NEST[i] === 1) {
             // correct choice
+            _this.SOUNDS['whoosh'].stop().play();
             _this.clickCount++;
             _this.colorCell(_this.FOREIGN_CELL_FILL_STYLE, i);
             _this.currentScore += _this.SCORE_MULTIPLE;
@@ -253,10 +257,34 @@ codeMelon.games.AppView = Backbone.View.extend({
             setTimeout(function() {
                 _this.drawForeignCells();
                 if (_this.currentScore === _this.FOREIGN_EGG_COUNT * _this.SCORE_MULTIPLE) {
+                    _this.SOUNDS['applause'].play();
                     _this.currentScore *= 2;
                     $(_this.CURRENT_SCORE_SELECTOR).text(_this.currentScore);
                 }
+                else if (_this.currentScore > 0) {
+                    _this.SOUNDS['laugh'].play();
+                }
+                else {
+                    _this.SOUNDS['scream'].play();
+                }
             }, _this.DELAY_ON_DONE);
         }
+    },
+
+    getSounds: function(options) {
+        var _this = this,
+            soundsPath = 'resources/sounds/',
+            params = {
+                formats: [ 'ogg' ],
+                preload: true
+            },
+            result = [];
+
+        result['applause'] = new buzz.sound(soundsPath + 'applause', params);
+        result['egg_break'] = new buzz.sound(soundsPath + 'egg_break', params);
+        result['scream'] = new buzz.sound(soundsPath + 'scream', params);
+        result['laugh'] = new buzz.sound(soundsPath + 'laugh', params);
+        result['whoosh'] = new buzz.sound(soundsPath + 'whoosh', params);
+        return result;
     }
 });
