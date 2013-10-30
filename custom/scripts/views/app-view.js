@@ -12,19 +12,20 @@ codeMelon.games.AppView = Backbone.View.extend({
         _.bindAll(_this,
             'render',
             'setConstants',
+            'initVariables',
             'getNest',
             'getForeignEggCount',
             'getInitialArray',
             'drawCells',
             'drawCell',
+            'colorCell',
             'drawUniformCells',
             'drawForeignCells',
             'handleClick'
         );
 
         _this.setConstants(options);
-        _this.readyForClick = false;
-        _this.clickCount = 1;
+        _this.initVariables(options);
         _this.render();
     },
 
@@ -52,10 +53,22 @@ codeMelon.games.AppView = Backbone.View.extend({
         _this.SIDE_SIZE = (_this.el.width - 2 * _this.CANVAS_PADDING) / _this.SIDE_CELLS,
         _this.NATIVE_CELL_FILL_STYLE = '#999999';
         _this.FOREIGN_CELL_FILL_STYLE = '#FF0000';
+        _this.WRONG_CHOICE_FILL_STYLE = '#444444';
         _this.CELL_STROKE_STYLE = '#cccccc';
         _this.CELL_BORDER_WIDTH = 64 / _this.SIDE_CELLS;
         _this.TIME_TO_SHOW_FOREIGN = 2000;
         _this.DELAY_UNTIL_CLICK_READY = 1500;
+        _this.DELAY_ON_DONE = 1000;
+        _this.CURRENT_SCORE_SELECTOR = '.current-score';
+        _this.SCORE_MULTIPLE = 100;
+    },
+
+    initVariables: function(options) {
+        var _this = this;
+
+        _this.readyForClick = false;
+        _this.clickCount = 0;
+        _this.currentScore = 0;
     },
 
     /**
@@ -166,6 +179,23 @@ codeMelon.games.AppView = Backbone.View.extend({
         _this.CONTEXT.stroke();
     },
 
+    colorCell: function(fillStyle, i) {
+        var _this = this,
+            row = Math.floor(i / _this.SIDE_CELLS),
+            col = i % _this.SIDE_CELLS,
+            yTop = _this.CANVAS_PADDING + row * _this.SIDE_SIZE,
+            xLeft = _this.CANVAS_PADDING + col * _this.SIDE_SIZE;
+
+        _this.CONTEXT.save();
+        _this.CONTEXT.fillStyle = fillStyle;
+        _this.CONTEXT.strokeStyle = _this.CELL_STROKE_STYLE;
+        _this.CONTEXT.lineWidth = _this.CELL_BORDER_WIDTH;
+        _this.CONTEXT.fillRect(xLeft, yTop, _this.SIDE_SIZE, _this.SIDE_SIZE);
+        _this.CONTEXT.rect(xLeft, yTop, _this.SIDE_SIZE, _this.SIDE_SIZE);
+        _this.CONTEXT.stroke();
+        _this.CONTEXT.restore();
+    },
+
     drawUniformCells: function() {
         var _this = this;
 
@@ -196,7 +226,7 @@ codeMelon.games.AppView = Backbone.View.extend({
             console.log('out of bounds');
             return;
         }
-        if (_this.clickCount > _this.FOREIGN_EGG_COUNT) {
+        if (_this.clickCount >= _this.FOREIGN_EGG_COUNT) {
             console.log('no more guesses allowed!');
             return;
         }
@@ -206,12 +236,27 @@ codeMelon.games.AppView = Backbone.View.extend({
         col = Math.floor(clickX / _this.SIDE_SIZE);
         i = _this.SIDE_CELLS * row + col;
         if (_this.NEST[i] === 0) {
+            // wrong choice
             _this.clickCount++;
-            alert('You destroyed a native egg!');
+            _this.colorCell(_this.WRONG_CHOICE_FILL_STYLE, i);
+            _this.currentScore -= _this.SCORE_MULTIPLE;
+            $(_this.CURRENT_SCORE_SELECTOR).text(_this.currentScore);
         }
         else if (_this.NEST[i] === 1) {
+            // correct choice
             _this.clickCount++;
-            alert('Success!');
+            _this.colorCell(_this.FOREIGN_CELL_FILL_STYLE, i);
+            _this.currentScore += _this.SCORE_MULTIPLE;
+            $(_this.CURRENT_SCORE_SELECTOR).text(_this.currentScore);
+        }
+        if (_this.clickCount === _this.FOREIGN_EGG_COUNT) {
+            setTimeout(function() {
+                _this.drawForeignCells();
+                if (_this.currentScore === _this.FOREIGN_EGG_COUNT * _this.SCORE_MULTIPLE) {
+                    _this.currentScore *= 2;
+                    $(_this.CURRENT_SCORE_SELECTOR).text(_this.currentScore);
+                }
+            }, _this.DELAY_ON_DONE);
         }
     }
 });
