@@ -13,9 +13,8 @@ codeMelon.games.AppView = Backbone.View.extend({
             'render',
             'setConstants',
             'initVariables',
-            'getNest',
+            'getNestWidth',
             'getForeignEggCount',
-            'getInitialArray',
             'drawCells',
             'drawCell',
             'colorCell',
@@ -53,8 +52,8 @@ codeMelon.games.AppView = Backbone.View.extend({
         _this.CONTEXT = _this.el.getContext('2d');
         _this.CANVAS_PADDING = 16;
         _this.FOREIGN_EGG_COUNT = _this.getForeignEggCount();
-        _this.NEST = _this.getNest();
-        _this.SIDE_CELLS = Math.floor(Math.sqrt(_this.NEST.length) + 0.1);
+        _this.SIDE_CELLS = _this.getNestWidth();
+        _this.NEST = new codeMelon.games.Nest(_this.SIDE_CELLS, _this.FOREIGN_EGG_COUNT).content;
         _this.SIDE_SIZE = (_this.el.width - 2 * _this.CANVAS_PADDING) / _this.SIDE_CELLS,
         _this.NATIVE_CELL_FILL_STYLE = '#999999';
         _this.FOREIGN_CELL_FILL_STYLE = '#FF0000';
@@ -79,81 +78,14 @@ codeMelon.games.AppView = Backbone.View.extend({
         _this.levelScore = 0;
     },
 
-    /**
-     * NEST is an array of size SIDE_CELLS * SIDE_CELLS representing
-     * a square grid. 
-     * Cells with no eggs (on the corners) have a value of -1.
-     * Cells with native eggs have a value of 0.
-     * Cells with foreign eggs have a value of 1.
-     */
-    getNest: function() {
-        var _this = this,
-            result = _this.getInitialArray(),
-            valuesToRandomize = [],
-            foreignEggs,
-            i;
-
-        // get cells occupied by eggs
-        for (i = 0; i < result.length; i++) {
-            if (result[i] === 0) {
-                valuesToRandomize.push(i);
-            }
-        }
-        // choose foreign egg cells randomly among the cells occupied by eggs
-        foreignEggs = codeMelon.utils.randomize(valuesToRandomize, _this.FOREIGN_EGG_COUNT);
-        for (i = 0; i < foreignEggs.length; i++) {
-            result[foreignEggs[i]] = 1;
-        }
-        return result;
+    getNestWidth: function() {
+        // TODO link to context
+        return 4;
     },
 
     getForeignEggCount: function() {
         // TODO link to context
         return 3;
-    },
-
-    getInitialArray: function() {
-        var result4 = [
-                -1, 0, 0, -1,
-                0, 0, 0, 0,
-                0, 0, 0, 0,
-                -1, 0, 0, -1
-            ],
-            result5 = [
-                -1, 0, 0, 0, -1,
-                0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0,
-                -1, 0, 0, 0, -1
-            ],
-            result6 = [
-                -1, -1, 0, 0, -1, -1,
-                -1, 0, 0, 0, 0, -1,
-                0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0,
-                -1, 0, 0, 0, 0, -1,
-                -1, -1, 0, 0, -1, -1
-            ],
-            result7 = [
-                -1, -1, 0, 0, 0, -1, -1,
-                -1, 0, 0, 0, 0, 0, -1,
-                0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0,
-                -1, 0, 0, 0, 0, 0, -1,
-                -1, -1, 0, 0, 0, -1, -1
-            ],
-            result8 = [
-                -1, -1, 0, 0, 0, 0, -1, -1,
-                -1, 0, 0, 0, 0, 0, 0, -1,
-                0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0,
-                -1, 0, 0, 0, 0, 0, 0, -1,
-                -1, -1, 0, 0, 0, 0, -1, -1
-            ];
-        return result4;
     },
 
     /**
