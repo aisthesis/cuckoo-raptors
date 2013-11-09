@@ -1,5 +1,11 @@
-var codeMelon = codeMelon || {};
+/**
+ * _c is the abbreviation for codeMelon.utils
+ */
+var codeMelon = codeMelon || {},
+    _c;
+
 codeMelon.utils = codeMelon.utils || {};
+_c = codeMelon.utils;
 
 /**
  * Without the optional <code>choose</code> parameter, the function simply

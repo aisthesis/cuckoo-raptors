@@ -1,5 +1,12 @@
-var codeMelon = codeMelon || {}; 
+/**
+ * Dependencies:
+ * custom/scripts/models/nest.js
+ */
+var codeMelon = codeMelon || {},
+    _cg;
+
 codeMelon.games = codeMelon.games || {}; 
+_cg = codeMelon.games;
 
 codeMelon.games.AppView = Backbone.View.extend({
     events: {
@@ -53,7 +60,7 @@ codeMelon.games.AppView = Backbone.View.extend({
         _this.CANVAS_PADDING = 16;
         _this.FOREIGN_EGG_COUNT = _this.getForeignEggCount();
         _this.SIDE_CELLS = _this.getNestWidth();
-        _this.NEST = new codeMelon.games.Nest(_this.SIDE_CELLS, _this.FOREIGN_EGG_COUNT).content;
+        _this.NEST = new _cg.Nest(_this.SIDE_CELLS, _this.FOREIGN_EGG_COUNT).content;
         _this.SIDE_SIZE = (_this.el.width - 2 * _this.CANVAS_PADDING) / _this.SIDE_CELLS,
         _this.NATIVE_CELL_FILL_STYLE = '#999999';
         _this.FOREIGN_CELL_FILL_STYLE = '#FF0000';

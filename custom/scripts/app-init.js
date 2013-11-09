@@ -1,3 +1,3 @@
-var appView = new codeMelon.games.AppView({
+var appView = new _cg.AppView({
         el: $('#game-content')
     }); 

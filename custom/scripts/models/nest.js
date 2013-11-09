@@ -2,8 +2,11 @@
  * Dependencies:
  * custom/scripts/utils.js
  */
-var codeMelon = codeMelon || {};
+var codeMelon = codeMelon || {},
+    _cg;
+
 codeMelon.games = codeMelon.games || {};
+_cg = codeMelon.games;
 
 /**
  * Nest constructor requires as input a width (nests are always
@@ -62,7 +65,7 @@ codeMelon.games.Nest = function(width, foreignEggCount) {
     }
 
     // get random foreign eggs
-    foreignEggs = codeMelon.utils.randomize(occupiedCells, foreignEggCount);
+    foreignEggs = _c.randomize(occupiedCells, foreignEggCount);
 
     // set array value to 1 for foreign eggs
     for (var i = 0; i < foreignEggs.length; i++) {
