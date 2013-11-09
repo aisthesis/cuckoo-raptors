@@ -14,9 +14,7 @@ codeMelon.games.AppView = Backbone.View.extend({
     },
 
     initialize: function(options) {
-        var _this = this;
-
-        _.bindAll(_this,
+        _.bindAll(this,
             'render',
             'setConstants',
             'initVariables',
@@ -34,9 +32,9 @@ codeMelon.games.AppView = Backbone.View.extend({
             'renderScores'
         );
 
-        _this.setConstants(options);
-        _this.initVariables(options);
-        _this.render();
+        this.setConstants(options);
+        this.initVariables(options);
+        this.render();
     },
 
     render: function() {
@@ -54,35 +52,31 @@ codeMelon.games.AppView = Backbone.View.extend({
     },
 
     setConstants: function(options) {
-        var _this = this;
-
-        _this.CONTEXT = _this.el.getContext('2d');
-        _this.CANVAS_PADDING = 16;
-        _this.FOREIGN_EGG_COUNT = _this.getForeignEggCount();
-        _this.SIDE_CELLS = _this.getNestWidth();
-        _this.NEST = new _cg.Nest(_this.SIDE_CELLS, _this.FOREIGN_EGG_COUNT).content;
-        _this.SIDE_SIZE = (_this.el.width - 2 * _this.CANVAS_PADDING) / _this.SIDE_CELLS,
-        _this.NATIVE_CELL_FILL_STYLE = '#999999';
-        _this.FOREIGN_CELL_FILL_STYLE = '#FF0000';
-        _this.WRONG_CHOICE_FILL_STYLE = '#444444';
-        _this.CELL_STROKE_STYLE = '#cccccc';
-        _this.CELL_BORDER_WIDTH = 64 / _this.SIDE_CELLS;
-        _this.TIME_TO_SHOW_FOREIGN = 2000;
-        _this.DELAY_UNTIL_CLICK_READY = 1500;
-        _this.DELAY_ON_DONE = 1000;
-        _this.CURRENT_SCORE_SELECTOR = '.current-score';
-        _this.LEVEL_SCORE_SELECTOR = '.level-score';
-        _this.SCORE_MULTIPLE = 100;
-        _this.SOUNDS = _this.getSounds(options);
+        this.CONTEXT = this.el.getContext('2d');
+        this.CANVAS_PADDING = 16;
+        this.FOREIGN_EGG_COUNT = this.getForeignEggCount();
+        this.SIDE_CELLS = this.getNestWidth();
+        this.NEST = new _cg.Nest(this.SIDE_CELLS, this.FOREIGN_EGG_COUNT).content;
+        this.SIDE_SIZE = (this.el.width - 2 * this.CANVAS_PADDING) / this.SIDE_CELLS,
+        this.NATIVE_CELL_FILL_STYLE = '#999999';
+        this.FOREIGN_CELL_FILL_STYLE = '#FF0000';
+        this.WRONG_CHOICE_FILL_STYLE = '#444444';
+        this.CELL_STROKE_STYLE = '#cccccc';
+        this.CELL_BORDER_WIDTH = 64 / this.SIDE_CELLS;
+        this.TIME_TO_SHOW_FOREIGN = 2000;
+        this.DELAY_UNTIL_CLICK_READY = 1500;
+        this.DELAY_ON_DONE = 1000;
+        this.CURRENT_SCORE_SELECTOR = '.current-score';
+        this.LEVEL_SCORE_SELECTOR = '.level-score';
+        this.SCORE_MULTIPLE = 100;
+        this.SOUNDS = this.getSounds(options);
     },
 
     initVariables: function(options) {
-        var _this = this;
-
-        _this.readyForClick = false;
-        _this.clickCount = 0;
-        _this.currentScore = 0;
-        _this.levelScore = 0;
+        this.readyForClick = false;
+        this.clickCount = 0;
+        this.currentScore = 0;
+        this.levelScore = 0;
     },
 
     getNestWidth: function() {
@@ -100,59 +94,51 @@ codeMelon.games.AppView = Backbone.View.extend({
      * style, 1 to fill only foreign cells with the given style
      */
     drawCells: function(fillStyle, minTypeToFill) {
-        var _this = this;
-
-        _this.CONTEXT.save();
-        _this.CONTEXT.fillStyle = fillStyle;
-        _this.CONTEXT.strokeStyle = _this.CELL_STROKE_STYLE;
-        _this.CONTEXT.lineWidth = _this.CELL_BORDER_WIDTH;
-        for (var i = 0; i < _this.NEST.length; i++) {
-            if (_this.NEST[i] >= minTypeToFill) {
-                _this.drawCell(i);
+        this.CONTEXT.save();
+        this.CONTEXT.fillStyle = fillStyle;
+        this.CONTEXT.strokeStyle = this.CELL_STROKE_STYLE;
+        this.CONTEXT.lineWidth = this.CELL_BORDER_WIDTH;
+        for (var i = 0; i < this.NEST.length; i++) {
+            if (this.NEST[i] >= minTypeToFill) {
+                this.drawCell(i);
             }
         }
-        _this.CONTEXT.restore();
+        this.CONTEXT.restore();
     },
 
     drawCell: function(i) {
-        var _this = this,
-            row = Math.floor(i / _this.SIDE_CELLS),
-            col = i % _this.SIDE_CELLS,
-            yTop = _this.CANVAS_PADDING + row * _this.SIDE_SIZE,
-            xLeft = _this.CANVAS_PADDING + col * _this.SIDE_SIZE;
+        var row = Math.floor(i / this.SIDE_CELLS),
+            col = i % this.SIDE_CELLS,
+            yTop = this.CANVAS_PADDING + row * this.SIDE_SIZE,
+            xLeft = this.CANVAS_PADDING + col * this.SIDE_SIZE;
 
-        _this.CONTEXT.fillRect(xLeft, yTop, _this.SIDE_SIZE, _this.SIDE_SIZE);
-        _this.CONTEXT.rect(xLeft, yTop, _this.SIDE_SIZE, _this.SIDE_SIZE);
-        _this.CONTEXT.stroke();
+        this.CONTEXT.fillRect(xLeft, yTop, this.SIDE_SIZE, this.SIDE_SIZE);
+        this.CONTEXT.rect(xLeft, yTop, this.SIDE_SIZE, this.SIDE_SIZE);
+        this.CONTEXT.stroke();
     },
 
     colorCell: function(fillStyle, i) {
-        var _this = this,
-            row = Math.floor(i / _this.SIDE_CELLS),
-            col = i % _this.SIDE_CELLS,
-            yTop = _this.CANVAS_PADDING + row * _this.SIDE_SIZE,
-            xLeft = _this.CANVAS_PADDING + col * _this.SIDE_SIZE;
+        var row = Math.floor(i / this.SIDE_CELLS),
+            col = i % this.SIDE_CELLS,
+            yTop = this.CANVAS_PADDING + row * this.SIDE_SIZE,
+            xLeft = this.CANVAS_PADDING + col * this.SIDE_SIZE;
 
-        _this.CONTEXT.save();
-        _this.CONTEXT.fillStyle = fillStyle;
-        _this.CONTEXT.strokeStyle = _this.CELL_STROKE_STYLE;
-        _this.CONTEXT.lineWidth = _this.CELL_BORDER_WIDTH;
-        _this.CONTEXT.fillRect(xLeft, yTop, _this.SIDE_SIZE, _this.SIDE_SIZE);
-        _this.CONTEXT.rect(xLeft, yTop, _this.SIDE_SIZE, _this.SIDE_SIZE);
-        _this.CONTEXT.stroke();
-        _this.CONTEXT.restore();
+        this.CONTEXT.save();
+        this.CONTEXT.fillStyle = fillStyle;
+        this.CONTEXT.strokeStyle = this.CELL_STROKE_STYLE;
+        this.CONTEXT.lineWidth = this.CELL_BORDER_WIDTH;
+        this.CONTEXT.fillRect(xLeft, yTop, this.SIDE_SIZE, this.SIDE_SIZE);
+        this.CONTEXT.rect(xLeft, yTop, this.SIDE_SIZE, this.SIDE_SIZE);
+        this.CONTEXT.stroke();
+        this.CONTEXT.restore();
     },
 
     drawUniformCells: function() {
-        var _this = this;
-
-        _this.drawCells(_this.NATIVE_CELL_FILL_STYLE, 0);
+        this.drawCells(this.NATIVE_CELL_FILL_STYLE, 0);
     },
 
     drawForeignCells: function() {
-        var _this = this;
-
-        _this.drawCells(_this.FOREIGN_CELL_FILL_STYLE, 1);
+        this.drawCells(this.FOREIGN_CELL_FILL_STYLE, 1);
     },
 
     handleClick: function(event) {
@@ -217,8 +203,7 @@ codeMelon.games.AppView = Backbone.View.extend({
     },
 
     getSounds: function(options) {
-        var _this = this,
-            soundsPath = 'resources/sounds/',
+        var soundsPath = 'resources/sounds/',
             params = {
                 formats: [ 'ogg' ],
                 preload: true
@@ -238,16 +223,12 @@ codeMelon.games.AppView = Backbone.View.extend({
     },
 
     addToScores: function(bonus) {
-        var _this = this;
-
-        _this.currentScore += bonus;
-        _this.levelScore += bonus;
+        this.currentScore += bonus;
+        this.levelScore += bonus;
     },
 
     renderScores: function() {
-        var _this = this;
-
-        $(_this.CURRENT_SCORE_SELECTOR).text(_this.currentScore);
-        $(_this.LEVEL_SCORE_SELECTOR).text(_this.levelScore);
+        $(this.CURRENT_SCORE_SELECTOR).text(this.currentScore);
+        $(this.LEVEL_SCORE_SELECTOR).text(this.levelScore);
     }
 });
