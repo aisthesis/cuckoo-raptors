@@ -65,7 +65,7 @@ codeMelon.games.Nest = function(width, foreignEggCount) {
     }
 
     // get random foreign eggs
-    foreignEggs = _c.randomize(occupiedCells, foreignEggCount);
+    foreignEggs = _c.randomlyChoose(occupiedCells, foreignEggCount);
 
     // set array value to 1 for foreign eggs
     for (var i = 0; i < foreignEggs.length; i++) {
