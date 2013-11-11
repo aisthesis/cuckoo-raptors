@@ -13,7 +13,7 @@ _cg = codeMelon.games;
  * square, so height === width) and the number of foreign eggs
  * to be included in the nest.
  */
-codeMelon.games.Nest = function(width, foreignEggCount) {
+codeMelon.games.NestModel = function(width, foreignEggCount) {
     var nests = [],
         occupiedCells = [],
         foreignEggs = [];

@@ -56,7 +56,7 @@ codeMelon.games.AppView = Backbone.View.extend({
         this.CANVAS_PADDING = 16;
         this.FOREIGN_EGG_COUNT = this.getForeignEggCount();
         this.SIDE_CELLS = this.getNestWidth();
-        this.NEST = new _cg.Nest(this.SIDE_CELLS, this.FOREIGN_EGG_COUNT).content;
+        this.NEST_MODEL = new _cg.NestModel(this.SIDE_CELLS, this.FOREIGN_EGG_COUNT).content;
         this.SIDE_SIZE = (this.el.width - 2 * this.CANVAS_PADDING) / this.SIDE_CELLS,
         this.NATIVE_CELL_FILL_STYLE = '#999999';
         this.FOREIGN_CELL_FILL_STYLE = '#FF0000';
@@ -98,8 +98,8 @@ codeMelon.games.AppView = Backbone.View.extend({
         this.CONTEXT.fillStyle = fillStyle;
         this.CONTEXT.strokeStyle = this.CELL_STROKE_STYLE;
         this.CONTEXT.lineWidth = this.CELL_BORDER_WIDTH;
-        for (var i = 0; i < this.NEST.length; i++) {
-            if (this.NEST[i] >= minTypeToFill) {
+        for (var i = 0; i < this.NEST_MODEL.length; i++) {
+            if (this.NEST_MODEL[i] >= minTypeToFill) {
                 this.drawCell(i);
             }
         }
@@ -168,7 +168,7 @@ codeMelon.games.AppView = Backbone.View.extend({
         row = Math.floor(clickY / _this.SIDE_SIZE);
         col = Math.floor(clickX / _this.SIDE_SIZE);
         i = _this.SIDE_CELLS * row + col;
-        if (_this.NEST[i] === 0) {
+        if (_this.NEST_MODEL[i] === 0) {
             // wrong choice
             _this.SOUNDS['egg_break'].stop().play();
             _this.clickCount++;
@@ -176,7 +176,7 @@ codeMelon.games.AppView = Backbone.View.extend({
             _this.addToScores(-_this.SCORE_MULTIPLE);
             _this.renderScores();
         }
-        else if (_this.NEST[i] === 1) {
+        else if (_this.NEST_MODEL[i] === 1) {
             // correct choice
             _this.SOUNDS['whoosh'].stop().play();
             _this.clickCount++;
