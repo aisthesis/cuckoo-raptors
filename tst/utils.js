@@ -1,6 +1,8 @@
 test( "full shuffle test", function() {
     var items = [0, 1, 2, 3, 4],
-        repetitions = 32,   // probability of 1 / 2^32 that an element is unchanged
+        // probability for each element of remaining unchanged through
+        // all tests: 1 / (items.length ^ repetitions)
+        repetitions = 32,
         changed = [false, false, false, false, false],
         i, j;
     
@@ -18,7 +20,9 @@ test( "full shuffle test", function() {
 
 test( "partial shuffle test", function() {
     var items = [0, 1, 2, 3, 4],
-        repetitions = 32,   // probability of 1 / 2^32 that an element is unchanged
+        // probability for each element of remaining unchanged through
+        // all tests: 1 / (items.length ^ repetitions)
+        repetitions = 32, 
         changed = [false, false, false, false, false],
         depth = 2,
         i, j;
